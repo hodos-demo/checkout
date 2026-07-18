@@ -11,7 +11,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install (a real, small package — this repo's own manifest is intentionally fictitious, see fixture.ts)
-        run: npm install --no-save --ignore-scripts is-odd
+      - name: Install (real, small package, in a scratch dir — this repo's own manifest pins fictitious @hodos-internal/* packages on purpose, see fixture.ts; npm resolves a package.json's full dependency list even for a single named install, so this must not run inside the checkout)
+        run: |
+          mkdir -p /tmp/hodos-e2e-ci-scratch
+          cd /tmp/hodos-e2e-ci-scratch
+          npm init -y
+          npm install --no-save --ignore-scripts is-odd
       - name: Run a trivial test
         run: node -e "console.log('hodos e2e trivial test: ok'); process.exit(0)"
